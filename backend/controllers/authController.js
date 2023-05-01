@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
 
 const loginController = asyncHandler(async (req, res, next) => {
-  console.log(req.cookies);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -14,7 +13,7 @@ const loginController = asyncHandler(async (req, res, next) => {
 
   const user = await UserModel.findOne({ email });
 
-  if (user && bcrypt.compare(password, user.password)) {
+  if (user && (await bcrypt.compare(password, user.password))) {
     const accessToken = jwt.sign(
       {
         user: {
@@ -27,17 +26,28 @@ const loginController = asyncHandler(async (req, res, next) => {
       { expiresIn: "1d" }
     );
 
-    res.status(200).json({
-      success: true,
-      message: "User logged in successfully",
-      accessToken,
-    });
+    res
+      .status(200)
+      .cookie("token", accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 })
+      .json({
+        success: true,
+        message: "User logged in successfully",
+        accessToken,
+      });
   } else {
     res.status(400);
     return next(new Error("Incorrect email or password"));
   }
 });
 
-const logoutController = asyncHandler(async (req, res, next) => {});
+const logoutController = asyncHandler(async (req, res, next) => {
+  res
+    .status(200)
+    .cookie("token", null, { expires: new Date(Date.now()) })
+    .json({
+      success: true,
+      message: `User logged out successfully`,
+    });
+});
 
 module.exports = { loginController, logoutController };

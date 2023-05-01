@@ -45,9 +45,9 @@ const getUsers = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, totalUsers: users.length, users });
 });
 
-const getUserDetails = asyncHandler(async (req, res, next) => {
+const getUserDetails = (req, res) => {
   res.status(200).json({ success: true, user: req.user });
-});
+};
 
 const updateUser = asyncHandler(async (req, res, next) => {
   const { id } = req.params;

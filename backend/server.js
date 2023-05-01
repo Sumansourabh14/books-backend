@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors({ credentials: true }));
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);

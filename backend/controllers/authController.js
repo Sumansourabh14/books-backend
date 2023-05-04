@@ -28,7 +28,12 @@ const loginController = asyncHandler(async (req, res, next) => {
 
     res
       .status(200)
-      .cookie("token", accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 })
+      .cookie("token", accessToken, {
+        httpOnly: true,
+        maxAge: 15 * 60 * 1000,
+        sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
+        secure: process.env.NODE_ENV === "development" ? false : true,
+      })
       .json({
         success: true,
         message: "User logged in successfully",
@@ -43,7 +48,11 @@ const loginController = asyncHandler(async (req, res, next) => {
 const logoutController = asyncHandler(async (req, res, next) => {
   res
     .status(200)
-    .cookie("token", null, { expires: new Date(Date.now()) })
+    .cookie("token", null, {
+      expires: new Date(Date.now()),
+      sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
+      secure: process.env.NODE_ENV === "development" ? false : true,
+    })
     .json({
       success: true,
       message: `User logged out successfully`,

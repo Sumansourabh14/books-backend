@@ -27,7 +27,12 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors({ credentials: true }));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URI,
+    credentials: true,
+  })
+);
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);

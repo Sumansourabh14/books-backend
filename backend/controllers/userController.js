@@ -3,9 +3,9 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
 
 const signUpController = asyncHandler(async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { name, username, email, password } = req.body;
 
-  if (!username || !email || !password) {
+  if (!name || !username || !email || !password) {
     res.status(400);
     return next(new Error("All fields are required"));
   }
@@ -21,6 +21,7 @@ const signUpController = asyncHandler(async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await UserModel.create({
+    name,
     username,
     email,
     password: hashedPassword,
